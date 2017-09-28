@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Chromium OS,ebuild,Gentoo,cros,repo," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="子非鱼" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="以下记录Chromium OS 源码同步、编译、烧至U盘并使用的过程。  基础知识Chromium OS相关知识，看这里。 准备阶段最低配置   类型 参数     CPU 双核 2.0GHz   内存 8G   宽带 5Mbps   空白硬盘分区 50G     测试机型  双系统Win7下硬盘安装Ubuntu-16.04 LTS Q: 如何查看分区信息以确定(hdx,x)内参数？ A: 简单">
+<meta name="keywords" content="Chromium OS,ebuild,Gentoo,cros,repo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Chromium OS源码编译、烧录与使用笔记">
+<meta property="og:url" content="http://yoursite.com/2017/03/28/Chromium-OS源码编译、烧录与使用笔记/index.html">
+<meta property="og:site_name" content="子非鱼">
+<meta property="og:description" content="以下记录Chromium OS 源码同步、编译、烧至U盘并使用的过程。  基础知识Chromium OS相关知识，看这里。 准备阶段最低配置   类型 参数     CPU 双核 2.0GHz   内存 8G   宽带 5Mbps   空白硬盘分区 50G     测试机型  双系统Win7下硬盘安装Ubuntu-16.04 LTS Q: 如何查看分区信息以确定(hdx,x)内参数？ A: 简单">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-09-28T10:33:20.479Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chromium OS源码编译、烧录与使用笔记">
+<meta name="twitter:description" content="以下记录Chromium OS 源码同步、编译、烧至U盘并使用的过程。  基础知识Chromium OS相关知识，看这里。 准备阶段最低配置   类型 参数     CPU 双核 2.0GHz   内存 8G   宽带 5Mbps   空白硬盘分区 50G     测试机型  双系统Win7下硬盘安装Ubuntu-16.04 LTS Q: 如何查看分区信息以确定(hdx,x)内参数？ A: 简单">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/28/Chromium-OS源码编译、烧录与使用笔记/"/>
+
+
+
+
+
+  <title>Chromium OS源码编译、烧录与使用笔记 | 子非鱼</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">子非鱼</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/28/Chromium-OS源码编译、烧录与使用笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="梦田">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="子非鱼">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Chromium OS源码编译、烧录与使用笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-28T07:52:59+00:00">
+                2017-03-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>以下记录Chromium OS 源码同步、编译、烧至U盘并使用的过程。</p>
+</blockquote>
+<h3><span id="基础知识">基础知识</span></h3><p>Chromium OS相关知识，看<a href="http://blog.csdn.net/Arthur_02_13/article/category/6671328" target="_blank" rel="external">这里</a>。</p>
+<h3><span id="准备阶段">准备阶段</span></h3><h4><span id="最低配置">最低配置</span></h4><table>
+<thead>
+<tr>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">参数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">CPU</td>
+<td style="text-align:center">双核 2.0GHz</td>
+</tr>
+<tr>
+<td style="text-align:center">内存</td>
+<td style="text-align:center">8G</td>
+</tr>
+<tr>
+<td style="text-align:center">宽带</td>
+<td style="text-align:center">5Mbps</td>
+</tr>
+<tr>
+<td style="text-align:center">空白硬盘分区</td>
+<td style="text-align:center">50G</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><a href="http://detail.zol.com.cn/406/405139/param.shtml" target="_blank" rel="external">测试机型</a></p>
+</blockquote>
+<h4><span id="双系统">双系统</span></h4><p><a href="https://bluesmilery.github.io/blogs/1509af3a/" target="_blank" rel="external">Win7下硬盘安装Ubuntu-16.04 LTS</a></p>
+<p>Q: 如何查看分区信息以确定<code>(hdx,x)</code>内参数？</p>
+<p>A: 简单可选下载DiskGenius查看分区信息；极客可选<a href="https://jingyan.baidu.com/article/ce436649f26f4f3773afd324.html" target="_blank" rel="external">DOS下查看分区</a>。</p>
+<p>Q: 安装Ubuntu提示无法卸载<code>/isolinux</code>之类信息？</p>
+<p>A: <a href="http://blog.csdn.net/woxiaohahaa/article/details/53944407" target="_blank" rel="external">排错</a>。</p>
+<h4><span id="科学上网">科学上网</span></h4><h5><span id="服务端">服务端</span></h5><p>服务器选择Ubuntu 16.04，源码编译<code>shadowsocks-libev</code>，官方教程看<a href="https://github.com/shadowsocks/shadowsocks-libev" target="_blank" rel="external">这里</a>，中文看<a href="https://heiybb.com/ubuntu-ss.hf" target="_blank" rel="external">这里</a>。</p>
+<h5><span id="客户端">客户端</span></h5><p>全局代理设置看<a href="https://github.com/naseeihity/LearnReact/issues/7" target="_blank" rel="external">这里</a>。</p>
+<p>Q: Shadowsocks-Qt5开机自启如何设置？</p>
+<p>A: 看<a href="http://www.afox.cc/archives/83" target="_blank" rel="external">这里</a>。</p>
+<h5><span id="创建google-api">创建Google API</span></h5><p><a href="http://www.chromium.org/developers/how-tos/api-keys" target="_blank" rel="external">官方教程</a></p>
+<p>Q: 无权限修改 <code>/etc/chrome_dev.conf</code> ?</p>
+<p>A: <code>root # mount -o remount,rw /</code> ，此方法同样适用登录激活时替换hosts。</p>
+<h3><span id="源码编译chromium-os">源码编译Chromium OS</span></h3><h4><span id="获取chromium-os源码">获取Chromium OS源码</span></h4><p>安装依赖，之后配置<code>git</code></p>
+<pre><code>sudo apt-get install git-core gitk git-gui curl
+</code></pre><p>配置如下：</p>
+<pre><code>git config --global user.email &quot;you@example.com&quot;
+git config --global user.name &quot;Your Name&quot;
+</code></pre><p>接着，下载并配置<code>depot_tools</code></p>
+<pre><code>proxychain4 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+echo &quot;export PATH=`pwd`/depot_tools:&quot;$PATH&quot;&quot; &gt;&gt; ~/.bashrc
+echo &quot;umask 022&quot; &gt;&gt; ~/.bashrc
+echo &quot;export BOARD=x86-generic&quot; &gt;&gt; ~/.bashrc
+source ~/.bashrc
+</code></pre><p>可通过执行<code>cros</code>、<code>repo</code>命令验证。</p>
+<pre><code>proxychain4 repo init -u https://chromium.googlesource.com/chromiumos/manifest.git --repo-url https://chromium.googlesource.com/external/repo.git
+proxychain4 repo sync
+</code></pre><p>记得在需要使用代理时在命令前<code>proxychain4</code>。<br>关于Git与Repo的基础知识可以看<a href="http://www.cnblogs.com/angeldevil/p/3238470.html" target="_blank" rel="external">这里</a>。</p>
+<h4><span id="创建chroot">创建</span></h4><h5><span id="配置sudo">配置sudo</span></h5><p>如果不想每次启动新终端都重新输入密码，在配置文件中禁止tty_tickets即可，但此举使得所有进程都使用同一个sudo任务，具体参看<a href="https://wiki.archlinux.org/index.php/Sudo" target="_blank" rel="external">跨终端sudo</a>。</p>
+<h5><span id="使用cros_sdk创建chroot">使用cros_sdk创建chroot</span></h5><p>Q: <code>ImportError: No module named pkg_resources</code></p>
+<p>A: <code>sudo apt install python-pip</code></p>
+<p>Q: <code>Failure: Server presented certificate that does not match host www.googleapis.com / ERROR:(Note bash sometimes misreports &quot;command not found&quot; as exit code 1 instead of 127)</code></p>
+<p>A: hosts文件的问题，恢复原有<code>hosts</code>内容即可，具体参看<a href="https://bugs.chromium.org/p/chromium/issues/detail?id=465000" target="_blank" rel="external">这里</a>。</p>
+<p>Note: 如需删除<code>Chroot</code>，请使用<code>cros_sdk --delete</code>正确删除它。</p>
+<h4><span id="构建所有包">构建所有包</span></h4><p>首先，在<code>Chroot</code>内键入<code>export BOARD=x86-generic</code>，使用<code>./build_packages --board=${BOARD}</code>构建软件包，请耐心等待。</p>
+<h4><span id="构建测试镜像">构建测试镜像</span></h4><p>若上述操作成功，使用以下命令构建测试类型镜像并关闭开机验证，这样即可自由修改root文件系统内容。如果构建的是test这种类型的镜像，当使用SSH登陆装载此镜像的虚拟机时，密码统一为test0000。</p>
+<pre><code>./build_image --board=${BOARD} --noenable_rootfs_verification test
+</code></pre><h4><span id="将镜像转换为虚拟机镜像并运行">将镜像转换为虚拟机镜像并运行</span></h4><p>在Ubuntu上安装虚拟机。</p>
+<pre><code>sudo apt-get install qemu-kvm
+</code></pre><p>然后在BIOS中启用本地虚拟化</p>
+<pre><code>sudo kvm-ok
+</code></pre><p>出现下面信息表示本地虚拟机已开启。</p>
+<pre><code>INFO: /dev/kvm exists
+KVM acceleration can be used
+</code></pre><p>虚拟机基础操作命名示例：</p>
+<pre><code>1.启动虚拟机（带图形界面）
+$ ./bin/cros_start_vm --image_path=../build/images/${BOARD}/latest/chromiumos_qemu_image.bin
+
+2.启动虚拟机（不带图形界面）
+$ ./bin/cros_start_vm --no_graphics --image_path=../build/images/${BOARD}/latest/chromiumos_qemu_image.bin
+
+3.关闭虚拟机
+$ ./bin/cros_stop_vm --kvm_pid /tmp/kvm.1234.pid
+</code></pre><h4><span id="设置ssh访问测试镜像">设置SSH访问测试镜像</span></h4><p>从宿主机到虚拟机，SSH默认情况如下，密码为<code>test0000</code>，但可以自定义设置访问端口，test类型镜像下虚拟机密码貌似不能改。</p>
+<pre><code>ssh root@localhost -p 9222 -o StrictHostKeyChecking=no
+</code></pre><p>VNC登陆信息为127.0.0.1:5900</p>
+<h3><span id="自定义开机动画">自定义开机动画</span></h3><p>Chromium OS 开机动画实际上是由18张png图构成，只需替换即可，我们在<code>Chroot</code>下创建一个分支并在此分支下创建更改。</p>
+<h4><span id="创建更改的新本地分支">创建更改的新本地分支</span></h4><pre><code>repo start change-assets .
+(cr) (change-assets) demo ~/trunk/src/scripts $
+</code></pre><p>其中，repo start 参数如下：</p>
+<pre><code>repo start &lt;BRANCH_NAME&gt; [&lt;PROJECT_LIST&gt;]
+&lt;BRANCH_NAME&gt; 参数应该提供一个更改的简短说明给你正在尝试建立的项目。如果你不知道，那就考虑使用默认名称。
+&lt;PROJECT_LIST&gt; 指定将要参与这个主题分支的项目。
+注意：&quot;.&quot; 是指当前工作目录下的项目的简写。
+</code></pre><h4><span id="使用cros_workon修改包并替换图像">使用cros_workon修改包并替换图像</span></h4><h5><span id="找出ebuild映射目录">找出ebuild映射目录</span></h5><p><code>cros_workon</code> 工具可以帮助我们了解ebuild映射关系。可使用以下命令查看ebuild和目录的完整列表，确定之前已在Chroot里设置 <code>BOARD</code>：</p>
+<pre><code>cros_workon info --board=${BOARD} --all
+</code></pre><p>如果想了解哪些ebuild使用特定目录中的源代码，可以使用grep查找它们。例如：</p>
+<pre><code>cros_workon info --board = $ {BOARD} --all | grep chromeos-base/chromiumos-assets
+</code></pre><p>返回以下输出：</p>
+<pre><code>chromeos-base/chromiumos-assets chromiumos/platform/chromiumos-assets src/platform/chromiumos-assets
+</code></pre><p>这将告诉您以下信息：</p>
+<pre><code>ebuild的名称是： chromeos-base/chromiumos-assets
+服务器上git仓库的路径为： chromiumos/platform/chromiumos-assets
+您系统上源代码的路径是： src/platform/chromiumos-assets
+</code></pre><blockquote>
+<p>注：</p>
+<ol>
+<li>关于 <code>ebuild</code> 的知识看<a href="http://www.voidcn.com/tag/ebuild" target="_blank" rel="external">这里</a></li>
+<li>关于 <code>Gentoo</code> 的知识看<a href="http://www.voidcn.com/blog/aceking10/cata/1751275/list-1.html" target="_blank" rel="external">这里</a></li>
+</ol>
+</blockquote>
+<h5><span id="替换-package_name-下图片">替换 <code>${PACKAGE_NAME}</code> 下图片</span></h5><p>在Chroot下键入 <code>cros_workon --board=${BOARD} start ${PACKAGE_NAME}</code> ，将 <code>${PACKAGE_NAME}</code> 替换成需要变更的软件包名称，我们这里改为 <code>chromeos-base/chromiumos-assets</code> 从chroot外部运行以下命令 <code>proxychain4 repo sync</code> 同步源码（这一步表示还不是很懂），之后在<code>Chroot</code>内下载引导动画图片并批量替换（名字、尺寸须一致）。</p>
+<h4><span id="利用-cros-deploy-将修改的包部署到运行的虚拟机">利用 <code>cros deploy</code> 将修改的包部署到运行的虚拟机</span></h4><pre><code>cros deploy 127.0.0.1:9222 chromeos-base/chromiumos-assets
+</code></pre><blockquote>
+<p>注：</p>
+<ol>
+<li><code>cros deploy</code> 设置要生效首先虚拟机得开启</li>
+<li><code>cros deploy</code> 后需要重启虚拟机才能生效</li>
+</ol>
+</blockquote>
+<h3><span id="烧录">烧录</span></h3><h4><span id="将bin烧至u盘">将.bin烧至U盘</span></h4><p>键入 <code>sudo fdisk -l</code> 查看插入U盘所在区域，然后使用 <code>cros flash usb:///dev/sdd ~/chromiumos/src/build/images/x86-generic/latest/chromiumos_test_image.bin</code> 烧录编译的系统到U盘</p>
+<h4><span id="修改分区">修改分区</span></h4><p>如果要使用自定义大小容量的分区构建镜像，请考虑在 <code>build_library/legacy_disk_layout.json</code> 中添加新的磁盘布局或使用 <code>adjust_part</code>。请参阅下面的帮助，</p>
+<pre><code>adjust_part =&apos;STATE：1G&apos; ---- 将1GB添加到状态分区
+adjust_part =&apos;ROOT-A：-1G&apos; ---- 从主rootfs分区中删除1GB
+adjust_part =&apos;STATE：= 1G&apos; --- 设置状态分区为1GB
+</code></pre><p>这里键入 <code>./build_image --board=${BOARD} --noenable_rootfs_verification test --adjust_part=&#39;STATE:+10G&#39;</code>，这样我们的Chromium OS用户空间便增加10G，如果使用默认设置你会发现用户空间容量不足（约140MB）。</p>
+<h3><span id="后记">后记</span></h3><blockquote>
+<p>通过U盘引导进入系统后在Chromebook上使用时，触摸板不能用，但在其他测试机上无问题;如果换机引导运行系统需要重新输入帐号、密码激活，但里面原有的个人文件不会丢失;编译前将可以联网激活的<code>hosts</code>文件放进去可以比较方便的实现激活；如果出现不能联无线网可用手机连接笔记本共享上网，不久后便能设置无线网连接。如果烧录<code>test</code>类型镜像<code>Crosh</code>下<code>root</code>密码为<code>test0000</code>，其它默认为<code>chronos</code>或编译时自己设置的密码，设置方法见<a href="https://www.chromium.org/chromium-os/developer-guide#TOC-Set-the-chronos-user-password" target="_blank" rel="external">这里</a>；以上内容已同步至<a href="https://github.com/tongxindao/ChromiumOS-Wiki/wiki" target="_blank" rel="external">Wiki</a>。</p>
+</blockquote>
+<ol>
+<li><a href="https://bluesmilery.github.io/blogs/1509af3a/" target="_blank" rel="external">Linux系统安装——Ubuntu16.04+Windows7双系统</a></li>
+<li><a href="https://github.com/shadowsocks/shadowsocks-libev" target="_blank" rel="external">shadowsocks-libev官方教程</a></li>
+<li><a href="https://github.com/naseeihity/LearnReact/issues/7" target="_blank" rel="external">Ubuntu下实现全局翻墙的配置过程</a></li>
+<li><a href="https://www.chromium.org/chromium-os/developer-guide" target="_blank" rel="external">Chroumium OS developer guide</a></li>
+<li><a href="http://www.chromium.org/developers/how-tos/api-keys" target="_blank" rel="external">How to create Google API</a></li>
+<li><a href="https://wiki.archlinux.org/index.php/Sudo" target="_blank" rel="external">跨终端sudo</a></li>
+<li><a href="https://www.chromium.org/chromium-os/build/cros-deploy" target="_blank" rel="external">How to use cros deploy</a></li>
+<li><a href="https://github.com/ds-hwang/wiki/wiki/Build-Chromium-for-Chromium-OS-and-Deploy-to-realdevice" target="_blank" rel="external">Build Chromium for Chromium OS and Deploy to realdevice</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Chromium-OS/" rel="tag"># Chromium OS</a>
+          
+            <a href="/tags/ebuild/" rel="tag"># ebuild</a>
+          
+            <a href="/tags/Gentoo/" rel="tag"># Gentoo</a>
+          
+            <a href="/tags/cros/" rel="tag"># cros</a>
+          
+            <a href="/tags/repo/" rel="tag"># repo</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/24/通过Chrx在Chromebook上安装双“系统”（译）/" rel="next" title="通过Chrx在Chromebook上安装双“系统”（译）">
+                <i class="fa fa-chevron-left"></i> 通过Chrx在Chromebook上安装双“系统”（译）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/28/hello-world/" rel="prev" title="Hello World">
+                Hello World <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <p class="site-author-name" itemprop="name">梦田</p>
+            <p class="site-description motion-element" itemprop="description">彼岸在何方</p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">基础知识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">准备阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">2.1.</span> <span class="nav-text">最低配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">2.2.</span> <span class="nav-text">双系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">2.3.</span> <span class="nav-text">科学上网</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">2.3.1.</span> <span class="nav-text">服务端</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">2.3.2.</span> <span class="nav-text">客户端</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">2.3.3.</span> <span class="nav-text">创建Google API</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">源码编译Chromium OS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.1.</span> <span class="nav-text">获取Chromium OS源码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.2.</span> <span class="nav-text">创建</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">3.2.1.</span> <span class="nav-text">配置sudo</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">3.2.2.</span> <span class="nav-text">使用cros_sdk创建chroot</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.</span> <span class="nav-text">构建所有包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.4.</span> <span class="nav-text">构建测试镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.5.</span> <span class="nav-text">将镜像转换为虚拟机镜像并运行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.6.</span> <span class="nav-text">设置SSH访问测试镜像</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">4.</span> <span class="nav-text">自定义开机动画</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">4.1.</span> <span class="nav-text">创建更改的新本地分支</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">4.2.</span> <span class="nav-text">使用cros_workon修改包并替换图像</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">4.2.1.</span> <span class="nav-text">找出ebuild映射目录</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">4.2.2.</span> <span class="nav-text">替换 ${PACKAGE_NAME} 下图片</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">4.3.</span> <span class="nav-text">利用 cros deploy 将修改的包部署到运行的虚拟机</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">5.</span> <span class="nav-text">烧录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">5.1.</span> <span class="nav-text">将.bin烧至U盘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">5.2.</span> <span class="nav-text">修改分区</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">6.</span> <span class="nav-text">后记</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">梦田</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

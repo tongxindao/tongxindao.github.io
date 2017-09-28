@@ -7,6 +7,14 @@
     </url>
 
     <url>
+        <loc>http://yoursite.com/2017/09/28/%E5%9F%BA%E4%BA%8E%20Docker%20%E9%83%A8%E7%BD%B2%20Hexo%20%E5%B9%B6%E6%8E%A8%E9%80%81%E8%87%B3%20GitHub%20Pages/</loc>
+        <lastmod>2017-09-28T12:53:18.819Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://yoursite.com/2017/03/28/Chromium-OS%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E3%80%81%E7%83%A7%E5%BD%95%E4%B8%8E%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/</loc>
         <lastmod>2017-09-28T10:33:20.479Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -15,7 +23,7 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/2017/09/28/hello-world/</loc>
+        <loc>http://yoursite.com/2016/10/23/lubuntu-GitHub-Pages%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/</loc>
         <lastmod>2017-09-28T10:33:20.479Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -24,14 +32,6 @@
 
     <url>
         <loc>http://yoursite.com/2016/10/24/%E9%80%9A%E8%BF%87Chrx%E5%9C%A8Chromebook%E4%B8%8A%E5%AE%89%E8%A3%85%E5%8F%8C%E2%80%9C%E7%B3%BB%E7%BB%9F%E2%80%9D%EF%BC%88%E8%AF%91%EF%BC%89/</loc>
-        <lastmod>2017-09-28T10:33:20.479Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/2016/10/23/lubuntu-GitHub-Pages%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/</loc>
         <lastmod>2017-09-28T10:33:20.479Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
